@@ -1,14 +1,25 @@
 [project]
 name = "pdf-to-audio"
-version = "0.1.0"
-description = "Convert German PDF files to audio using Piper TTS"
-requires-python = ">=3.10"
+version = "0.2.0"
+description = "Convert German PDF files to audio using Piper TTS or Coqui TTS (DDC/VITS)"
+requires-python = ">=3.12"
 dependencies = [
     "pymupdf>=1.24.0",
-    "piper-tts>=1.2.0",
-    "soundfile>=0.12.1",
     "numpy>=1.24.0",
+    "soundfile>=0.12.1",
 ]
+
+[project.optional-dependencies]
+# Fast inference (~100× real-time on Apple Silicon)
+piper = ["piper-tts>=1.2.0"]
+# Clearer articulation — DDC model, ~2-5× real-time on CPU
+# coqui-tts is the maintained Idiap fork of the abandoned TTS package;
+# same API and model names, supports Python 3.9-3.12, has macOS wheels.
+# Versions >=0.27.4 require PyTorch installed separately;
+# pinning <0.27.4 keeps things self-contained (PyTorch bundled).
+coqui = ["coqui-tts>=0.24.2,<0.27.4"]
+# Both backends
+all = ["piper-tts>=1.2.0", "coqui-tts>=0.24.2,<0.27.4"]
 
 [project.scripts]
 pdf-to-audio = "pdf_to_audio:main"
